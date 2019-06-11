@@ -118,6 +118,16 @@ class TestDiceGame(IconIntegrateTestBase):
         tx_result_play = self.process_transaction(signed_transaction_play, self.icon_service)
         return tx_result_play
 
+    def _play_call(self, _from: KeyWallet):
+        call = CallBuilder().from_(_from.get_address()) \
+            .to(self._score_address) \
+            .method("play") \
+            .build()
+
+        # Sends the call request
+        response = self.process_call(call, self.icon_service)
+        return response
+
     def test_score_update(self):
         # update SCORE
         tx_result = self._deploy_score(self._score_address)
@@ -184,3 +194,10 @@ class TestDiceGame(IconIntegrateTestBase):
         self.assertTrue('status' in tx_result_play)
         self.assertEqual(0, tx_result_play['status'])
 
+        tx_result_join_room = self._join_room(self.test2_wallet, self.test1_wallet.get_address())
+        self.assertTrue('status' in tx_result_join_room)
+        self.assertEqual(1, tx_result_join_room['status'])
+
+        # join 한 유저가 플레이
+        tx_result_play = self._play_call(self.test2_wallet)
+        print(tx_result_play)

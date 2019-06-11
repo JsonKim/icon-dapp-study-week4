@@ -132,8 +132,8 @@ class DiceGame(IconScoreBase):
 
         self._DDB_in_game_room.remove(self.msg.sender)
 
-    @external
-    def play(self):
+    @external(readonly=True)
+    def play(self) -> Address:
         if self._DDB_in_game_room[self.msg.sender] is None:
             revert(f'No game room to play')
 
@@ -146,3 +146,19 @@ class DiceGame(IconScoreBase):
 
         if not game_room_to_play.is_full():
             revert("game room is not full")
+
+        p0 = game_room_to_play.participants[0]
+        s0 = f'{self.block.height} {p0} A'
+        d0 = rangeN(random(s0), 1, 6)
+
+        p1 = game_room_to_play.participants[1]
+        s1 = f'{self.block.height} {p1} B'
+        d1 = rangeN(random(s1), 1, 6)
+
+        winner = None
+        if d0 > d1:
+            winner = p0
+        elif d1 > d0:
+            winner = p1
+
+        return winner
