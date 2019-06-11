@@ -168,3 +168,19 @@ class TestDiceGame(IconIntegrateTestBase):
         tx_result_escape = self._escape(self.test1_wallet)
         self.assertTrue('status' in tx_result_escape)
         self.assertEqual(1, tx_result_escape['status'])
+
+    def test_create_play(self):
+        # 방에 없는 유저가 플레이하면 실패
+        tx_result_play = self._play(self.test1_wallet)
+        self.assertTrue('status' in tx_result_play)
+        self.assertEqual(0, tx_result_play['status'])
+
+        tx_result_create_room = self._create_room(self.test1_wallet)
+        self.assertTrue('status' in tx_result_create_room)
+        self.assertEqual(1, tx_result_create_room['status'])
+
+        # 혼자 있으면 플레이 실패
+        tx_result_play = self._play(self.test1_wallet)
+        self.assertTrue('status' in tx_result_play)
+        self.assertEqual(0, tx_result_play['status'])
+
