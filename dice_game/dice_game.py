@@ -131,3 +131,18 @@ class DiceGame(IconScoreBase):
             pass
 
         self._DDB_in_game_room.remove(self.msg.sender)
+
+    @external
+    def play(self):
+        if self._DDB_in_game_room[self.msg.sender] is None:
+            revert(f'No game room to play')
+
+        # Retrieve the game room ID & Check the game room status
+        game_room_id_to_play = self._DDB_in_game_room[self.msg.sender]
+        game_room_to_play_dict = json_loads(self._DDB_game_room[game_room_id_to_play])
+        game_room_to_play = GameRoom(Address.from_string(game_room_to_play_dict['owner']), Address.from_string(game_room_to_play_dict['game_room_id']),
+                                       game_room_to_play_dict['creation_time'],
+                                       game_room_to_play_dict['participants'])
+
+        if not game_room_to_play.is_full():
+            revert("game room is not full")
