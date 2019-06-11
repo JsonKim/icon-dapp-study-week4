@@ -18,6 +18,9 @@ class GameRoom:
     def escape(self, participant_to_escape: Address):
         self.participants.remove(str(participant_to_escape))
 
+    def is_full(self):
+        return len(self.participants) >= 2
+
     def __str__(self):
         response = {
             'owner': f'{self.owner}',

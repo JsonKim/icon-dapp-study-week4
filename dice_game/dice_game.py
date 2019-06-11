@@ -80,7 +80,7 @@ class DiceGame(IconScoreBase):
         game_room_list = self._get_game_room_list()
 
         # Check the game room's participants. Max : 2
-        if len(game_room.participants) > 1:
+        if game_room.is_full():
             revert(f"Full : Can not join to game room {_gameRoomId}")
 
         # Get in to the game room
@@ -111,7 +111,7 @@ class DiceGame(IconScoreBase):
 
         # Escape from the game room
         if game_room_to_escape.owner == self.msg.sender:
-            if len(game_room_to_escape.participants) == 1:
+            if not game_room_to_escape.is_full():
                 game_room_to_escape.escape(self.msg.sender)
                 self._crash_room(game_room_id_to_escape)
             else:
