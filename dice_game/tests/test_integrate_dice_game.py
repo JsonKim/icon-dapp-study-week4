@@ -103,6 +103,21 @@ class TestDiceGame(IconIntegrateTestBase):
         tx_result_join_room = self.process_transaction(signed_transaction_join_room, self.icon_service)
         return tx_result_join_room
 
+    def _play(self, _from: KeyWallet):
+        transaction_play = CallTransactionBuilder() \
+            .from_(_from.get_address()) \
+            .to(self._score_address) \
+            .step_limit(10_000_000) \
+            .nid(3) \
+            .nonce(100) \
+            .method("play") \
+            .params({}) \
+            .build()
+
+        signed_transaction_play = SignedTransaction(transaction_play, _from)
+        tx_result_play = self.process_transaction(signed_transaction_play, self.icon_service)
+        return tx_result_play
+
     def test_score_update(self):
         # update SCORE
         tx_result = self._deploy_score(self._score_address)
